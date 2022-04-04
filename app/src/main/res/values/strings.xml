@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Scanner</string>
+    <string name="confirmar_liberacao">Confirmar liberação do Box:</string>
+    <string name="insira_aqui">Insira aqui</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="tentar_novamente">Tentar novamente</string>
+    <string name="senha">Senha</string>
+    <string name="matricula">Matrícula</string>
+    <string name="token_login">token</string>
+    <string name="id_usuario">0</string>
+</resources>
