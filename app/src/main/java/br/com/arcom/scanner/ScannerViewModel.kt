@@ -31,11 +31,15 @@ class ScannerViewModel
     private val _dadosUsuario = MutableLiveData<String>()
     val dadosUsuario: LiveData<String> = _dadosUsuario
 
+
+    fun boxShared():String{
+        return sharedPreferences.getString("box", "")!!
+    }
+
+
     init {
-        viewModelScope.launch {
-            val nomeUsuario = sharedPreferences.getString("nomeUsuario", "")
-            _dadosUsuario.value = nomeUsuario!!
-        }
+        val nomeUsuario = sharedPreferences.getString("nomeUsuario", "")
+        _dadosUsuario.value = nomeUsuario!!
     }
 
     fun deslogar() {
@@ -44,24 +48,23 @@ class ScannerViewModel
     }
 
     fun verificaBox() {
-        viewModelScope.launch {
-            val boxShared = sharedPreferences.getString("box", "")
-            if (boxShared != null) {
-                _acao.value = Acao.Inicio
-            }
+        val boxShared = sharedPreferences.getString("box", "")
+        if (boxShared != "") {
+            _acao.value = Acao.Inicio
+        } else {
+            _acao.value = Acao.Finalizada
         }
     }
-
-
 
     fun observerAcao(acaoValue: Acao): String {
         return when (acaoValue) {
             Acao.Inicio -> "inicio"
             Acao.Fim -> "fim"
+            Acao.Finalizada -> "finalizada"
         }
     }
 
-    fun liberarBox(box: String,dismiss: () -> Unit) {
+    fun liberarBox(box: String, dismiss: () -> Unit) {
         viewModelScope.launch {
             _status.value = Result.Loading
 
@@ -82,15 +85,15 @@ class ScannerViewModel
                             token = token!!
                         )
                         _status.value = Result.Ok
-                    }catch (e: Exception) {
+                    } catch (e: Exception) {
                         editor.putString("box", "").apply()
                         _status.value = Result.Error(e)
                     }
                 } else {
-                    if (boxShared == box &&  _acao.value == Acao.Inicio) {
+                    if (boxShared == box && _acao.value == Acao.Inicio) {
                         try {
                             _acao.value = Acao.Fim
-                            editor.putString("box","").apply()
+                            editor.putString("box", "").apply()
                             scannerRepository.liberarBox(
                                 usuario = idUsuario,
                                 box = box,
@@ -99,7 +102,7 @@ class ScannerViewModel
                             )
                             _status.value = Result.Finalizada
 
-                        }catch (e: Exception) {
+                        } catch (e: Exception) {
                             _status.value = Result.Error(e)
                         }
                     }
@@ -107,7 +110,7 @@ class ScannerViewModel
 
             } catch (e: Exception) {
                 print("DEU ERRO AQUI ${e.message}")
-            }finally {
+            } finally {
                 dismiss()
             }
         }

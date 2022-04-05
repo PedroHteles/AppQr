@@ -17,12 +17,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.lifecycle.ViewModelProvider
 import br.com.arcom.scanner.util.Acao
 import br.com.arcom.scanner.util.Result
+import com.google.android.material.button.MaterialButton
+
+
+
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     private lateinit var viewModel: ScannerViewModel
 
 
@@ -41,9 +46,22 @@ class MainActivity : AppCompatActivity() {
             when(it) {
                 is Acao.Inicio -> {
                     binding.btnScan.text = "Terminar tarefa"
+                    binding.icLogosvg.visibility = View.INVISIBLE
+                    binding.txtBox.text = "Carregamento em andamento Box: " + "\n"+
+                            "${viewModel.boxShared()}"
+                    binding.txtBox.visibility = View.VISIBLE
+                    binding.bemVindo.visibility = View.INVISIBLE
+
                 }
                 is Acao.Fim -> {
                     binding.btnScan.text = "Iniciar nova tarefa"
+                    binding.txtBox.visibility = View.INVISIBLE
+                    binding.icLogosvg.visibility = View.VISIBLE
+                    binding.bemVindo.visibility = View.INVISIBLE
+                }
+                is Acao.Finalizada -> {
+                    binding.btnScan.text = "Ler Qr Code"
+                    binding.icLogosvg.visibility = View.VISIBLE
                 }
 
             }
@@ -90,23 +108,52 @@ class MainActivity : AppCompatActivity() {
 
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val UPCScanned = scanResult.contents
+        val list = Gson().fromJson(UPCScanned, Box::class.java)
         if (UPCScanned != null) {
-            openDialog(UPCScanned)
+            if(viewModel.boxShared() != "" && list.box != viewModel.boxShared()){
+                openDialogErro()
+            }else{
+                openDialog(UPCScanned)
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    fun openDialogErro() {
+
+        val dialogError = Dialog(this)
+        dialogError.setContentView(R.layout.erro_box)
+        val texto = dialogError.findViewById(R.id.txt_box_nao_finalizada) as TextView
+        val btn = dialogError.findViewById(R.id.btn_fechar) as MaterialButton
+        texto.text = resources.getString(R.string.box_nao_finalizada, viewModel.boxShared())
+        btn.setOnClickListener{
+            dialogError.dismiss()
+        }
+        dialogError.show()
+
+    }
+
+
     private fun openDialog(result: String) {
-        try {
+      
             val list = Gson().fromJson(result, Box::class.java)
             val dialog = Dialog(this)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(true)
             dialog.setContentView(R.layout.dialog)
             val texto = dialog.findViewById(R.id.numero_box) as TextView
-            texto.text = list.box
+            val titulo = dialog.findViewById(R.id.txt_titulo) as TextView
+
+        texto.text = list.box
             if (!list.box.isNullOrEmpty()) {
+                if(viewModel.boxShared() != ""){
+                    titulo.text = "Deseja Finalizar tarefa Box: " + "\n" + "${list.box}"
+                }else{
+                    titulo.text = "Deseja Iniciar uma nova tarefa Box: " + "\n" + "${list.box}"
+                }
+
+                
                 dialog.show()
                 var btnConfirma = dialog.findViewById(R.id.btn_confirmar) as Button
                 var loading = dialog.findViewById(R.id.loading) as ProgressBar
@@ -120,21 +167,7 @@ class MainActivity : AppCompatActivity() {
                 throw error("erro na leitura")
             }
 
-        } catch (e: Exception) {
-            val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.dialog_erro)
-            val text = dialog.findViewById(R.id.texError) as TextView
-            text.text = "Erro Na leitura do qrCode"
-            dialog.show()
-            var btn = dialog.findViewById(R.id.btn_releitura) as Button
-            btn.setOnClickListener {
-                dialog.dismiss()
-                initScanner()
-            }
 
-        }
     }
 
 }
