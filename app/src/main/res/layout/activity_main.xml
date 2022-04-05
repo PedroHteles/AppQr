@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/nome_usuario"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintWidth_percent="0.9"
+        android:layout_marginTop="55dp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="25dp"
+        android:text="nome usuario"
+        />
+
+
+    <TextView
+        android:id="@+id/txt_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/carregamento_em_andamento_box"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnScan"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/ic_logosvg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_logosvg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        android:textSize="32dp"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintBottom_toTopOf="@id/btnScan"/>
+
+    <TextView
+        android:id="@+id/bem_vindo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/ic_logosvg"
+        android:layout_marginTop="150dp"
+        android:textSize="30dp"
+        android:text="Bem vindo"
+        />
+
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintWidth_percent="0.9"
+        android:text="Ler QR Code"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#00a651"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
