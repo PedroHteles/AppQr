@@ -43,7 +43,6 @@ class LoginActivity : AppCompatActivity() {
             }
 
 
-
             when (it) {
                 is Result.Ok -> {
                     Toast.makeText(this, "Saldo com sucesso!", Toast.LENGTH_SHORT).show()

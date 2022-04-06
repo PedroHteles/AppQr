@@ -11,6 +11,8 @@
     <string name="por_favor_precisso_liberar_o_box_anterior">Por favor é precisso liberar o box anterior</string>
     <string name="box_nao_finalizada">Box não finalizada: %1$s</string>
     <string name="fechar">Fechar</string>
-    <string name="carregamento_em_andamento_box">Carregamento em andamento Box:  %1$s</string>
+    <string name="carregamento_em_andamento_box">Carregamento em andamento do box:</string>
     <string name="box_liberado_com_sucesso">Box liberado com sucesso!</string>
+    <string name="cancela">Cancela</string>
+    <string name="confirma" >Confirma</string>
 </resources>

@@ -25,4 +25,9 @@ class SucessoActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    override fun onBackPressed() {
+        // super.onBackPressed();
+        // Not calling **super**, disables back button in current screen.
+    }
 }

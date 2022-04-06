@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
         binding.btnScan.setOnClickListener { initScanner() }
         viewModel = ViewModelProvider(this)[ScannerViewModel::class.java]
@@ -43,28 +44,31 @@ class MainActivity : AppCompatActivity() {
             binding.nomeUsuario.text = it
         }
         viewModel.acao.observe(this) {
+            fun Intent.clearStack() {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
             when(it) {
                 is Acao.Inicio -> {
                     binding.btnScan.text = "Terminar tarefa"
                     binding.icLogosvg.visibility = View.INVISIBLE
-                    binding.txtBox.text = "Carregamento em andamento Box: " + "\n"+
-                            "${viewModel.boxShared()}"
+                    binding.txtBox.visibility = View.VISIBLE
+                    binding.box.visibility = View.VISIBLE
+                    binding.box.text = "${viewModel.boxShared()}"
                     binding.txtBox.visibility = View.VISIBLE
                     binding.bemVindo.visibility = View.INVISIBLE
 
                 }
                 is Acao.Fim -> {
+                    Toast.makeText(this, "Tarefa Finalizada!", Toast.LENGTH_SHORT).show()
+                    val intentSucess = Intent(this, SucessoActivity::class.java)
+                    startActivity(intentSucess)
+                    intentSucess.clearStack()
+
+                }
+                else -> {
                     binding.btnScan.text = "Iniciar nova tarefa"
-                    binding.txtBox.visibility = View.INVISIBLE
-                    binding.icLogosvg.visibility = View.VISIBLE
-                    binding.bemVindo.visibility = View.INVISIBLE
-
-                }
-                is Acao.Finalizada -> {
-                    binding.btnScan.text = "Ler Qr Code"
                     binding.icLogosvg.visibility = View.VISIBLE
                 }
-
             }
         }
 
@@ -80,13 +84,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Tarefa iniciada!", Toast.LENGTH_SHORT).show()
                     binding.btnScan.text = "Terminar tarefa"
                 }
-                is Result.Finalizada -> {
-                    Toast.makeText(this, "Tarefa Finalizada!", Toast.LENGTH_SHORT).show()
-                    val intentSucess = Intent(this, SucessoActivity::class.java)
-                    startActivity(intentSucess)
-                    intentSucess.clearStack()
-//                    binding.btnScan.text = "Iniciar nova tarefa"
-                }
                 is Result.Error -> {
                     Toast.makeText(this, "Erro ao processar a requisicao $it!", Toast.LENGTH_LONG).show()
                     // desabilitar o loading progress
@@ -101,6 +98,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun onBackPressed() {
+    // super.onBackPressed();
+    // Not calling **super**, disables back button in current screen.
+    }
     private fun initScanner() {
         val integrator = IntentIntegrator(this)
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
@@ -112,16 +114,22 @@ class MainActivity : AppCompatActivity() {
 
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val UPCScanned = scanResult.contents
-        val list = Gson().fromJson(UPCScanned, Box::class.java)
-        if (UPCScanned != null) {
-            if(viewModel.boxShared() != "" && list.box != viewModel.boxShared()){
-                openDialogErro()
-            }else{
-                openDialog(UPCScanned)
+        try {
+            val list = Gson().fromJson(UPCScanned, Box::class.java)
+            if (UPCScanned != null) {
+                if(viewModel.boxShared() != "" && list.box != viewModel.boxShared()){
+                    openDialogErro()
+                }else{
+                    openDialog(UPCScanned)
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data)
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+        }catch (e: Exception) {
+            Toast.makeText(this,"DEU ERRO AQUI ${e.message}",Toast.LENGTH_SHORT).show()
         }
+
+
     }
 
     fun openDialogErro() {
@@ -148,29 +156,36 @@ class MainActivity : AppCompatActivity() {
             dialog.setContentView(R.layout.dialog)
             val texto = dialog.findViewById(R.id.numero_box) as TextView
             val titulo = dialog.findViewById(R.id.txt_titulo) as TextView
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
+
+            var btnFechar = dialog.findViewById(R.id.btn_fechar) as Button
+            btnFechar.setOnClickListener{
+                    dialog.dismiss()
+            }
 
         texto.text = list.box
-            if (!list.box.isNullOrEmpty()) {
-                if(viewModel.boxShared() != ""){
-                    titulo.text = "Deseja Finalizar tarefa Box: " + "\n" + "${list.box}"
-                }else{
-                    titulo.text = "Deseja Iniciar uma nova tarefa Box: " + "\n" + "${list.box}"
-                }
-
-                dialog.show()
-                var btnConfirma = dialog.findViewById(R.id.btn_confirmar) as Button
-                var loading = dialog.findViewById(R.id.loading) as ProgressBar
-                btnConfirma.setOnClickListener{
-                    btnConfirma.visibility = View.GONE
-                    loading.visibility = View.VISIBLE
-                    viewModel.liberarBox(list.box) {
-                        dialog.dismiss()
+                if (!list.box.isNullOrEmpty()) {
+                    if(viewModel.boxShared() != ""){
+                        titulo.text = "Deseja finalizar o carregamento do box:"
+                    }else{
+                        titulo.text = "Deseja iniciar o carregamento do box:"
                     }
 
+                    dialog.show()
+                    var btnConfirma = dialog.findViewById(R.id.btn_confirmar) as Button
+                    var loading = dialog.findViewById(R.id.loading) as ProgressBar
+                    btnConfirma.setOnClickListener{
+                        btnConfirma.visibility = View.GONE
+                        btnFechar.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
+                        viewModel.liberarBox(list.box) {
+                            dialog.dismiss()
+                        }
+                    }
+                } else {
+                    throw error("erro na leitura")
                 }
-            } else {
-                throw error("erro na leitura")
-            }
 
 
     }
