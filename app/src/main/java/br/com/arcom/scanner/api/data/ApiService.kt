@@ -30,10 +30,10 @@ interface ApiService{
 
 
     @POST("api/estoque/v1/atualiza-box-carregamento")
-    suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?)
+    suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?,@Query("situacao") situacao: String?)
 
     companion object {
-        const val BASE_URL = "http://bf2d-189-112-215-169.ngrok.io"
+        const val BASE_URL = "http://184d-200-251-86-130.ngrok.io"
 
         fun create(token: String?): ApiService {
             val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC}

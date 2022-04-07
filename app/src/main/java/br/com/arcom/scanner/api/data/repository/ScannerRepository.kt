@@ -16,9 +16,9 @@ class ScannerRepository @Inject constructor() {
         val token = service.createDeviceToken(SolicitaDeviceTokenRequest(idUsuario = idUsuario, senha = senha))
         return token
     }
-    suspend fun liberarBox(box:String, usuario:Long,token:String) {
+    suspend fun liberarBox(box:String, usuario:Long,token:String,situacao:String) {
         val service = ApiService.create(token)
-        service.liberarBox(box, usuario)
+        service.liberarBox(box, usuario,situacao)
 
     }
 

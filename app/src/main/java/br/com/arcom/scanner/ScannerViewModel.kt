@@ -93,6 +93,7 @@ class ScannerViewModel
                             scannerRepository.liberarBox(
                                 usuario = idUsuario,
                                 box = box,
+                                situacao = "D",
                                 token = token!!
                             )
                             editor.putString("box", "").apply()
