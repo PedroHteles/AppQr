@@ -73,12 +73,12 @@ class ScannerViewModel
 
                 if (boxShared == "") {
                     try {
-                        scannerRepository.liberarBox(
-                            usuario = idUsuario,
-                            box = box,
-                            acao = observerAcao(Acao.Inicio),
-                            token = token!!
-                        )
+//                        scannerRepository.liberarBox(
+//                            usuario = idUsuario,
+//                            box = box,
+//                            acao = observerAcao(Acao.Inicio),
+//                            token = token!!
+//                        )
                         editor.putString("box", box).apply()
                         _acao.value = Acao.Inicio
                         _status.value = Result.Ok
@@ -93,7 +93,6 @@ class ScannerViewModel
                             scannerRepository.liberarBox(
                                 usuario = idUsuario,
                                 box = box,
-                                acao = observerAcao(Acao.Fim),
                                 token = token!!
                             )
                             editor.putString("box", "").apply()

@@ -29,11 +29,11 @@ interface ApiService{
     ): SolicitaDeviceTokenResponse
 
 
-    @POST("api/estoque/v1/liberacao-box-carregamento")
-    suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?,@Query("acao")  acao: String?)
+    @POST("api/estoque/v1/atualiza-box-carregamento")
+    suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?)
 
     companion object {
-        const val BASE_URL = "http://f9d3-189-112-215-169.ngrok.io "
+        const val BASE_URL = "http://bf2d-189-112-215-169.ngrok.io"
 
         fun create(token: String?): ApiService {
             val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC}
