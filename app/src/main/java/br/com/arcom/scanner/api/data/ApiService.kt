@@ -24,7 +24,7 @@ interface ApiService{
     suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?,@Query("situacao")  situacao: String?)
 
     companion object {
-        const val BASE_URL = "http://0cea-200-251-86-130.ngrok.io"
+        const val BASE_URL = "http://1420-189-112-215-169.ngrok.io"
 
         fun create(token: String?): ApiService {
             val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC}

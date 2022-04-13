@@ -87,9 +87,10 @@ class ScannerViewModel
                         sharedPreferences.edit().clear().apply()
                         _status.value = Result.Unauthorized
                     }
-                    _status.value = Result.Error(e)
                     val editor = sharedPreferences.edit()
                     editor.putString("box", box).apply()
+                    _status.value = Result.Error(e)
+
                 }
 
             } catch (e: Exception) {
