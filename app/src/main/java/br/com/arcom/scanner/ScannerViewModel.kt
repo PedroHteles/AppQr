@@ -70,46 +70,32 @@ class ScannerViewModel
 
             try {
                 val idUsuario = sharedPreferences.getInt("idUsuario", 0).toLong()
-                val boxShared = sharedPreferences.getString("box", "")
                 val token = sharedPreferences.getString("token", "")
-                val editor = sharedPreferences.edit()
 
-                if (boxShared == "") {
-                    try {
-                        editor.putString("box", box).apply()
-                        _acao.value = Acao.Inicio
-                        scannerRepository.liberarBox(
-                            usuario = idUsuario,
-                            box = box,
-                            acao = observerAcao(acao.value!!),
-                            token = token!!
-                        )
-                        _status.value = Result.Ok
-                    } catch (e: Exception) {
-                        editor.putString("box", "").apply()
-                        _status.value = Result.Error(e)
-                    }
-                } else {
-                    if (boxShared == box && _acao.value == Acao.Inicio) {
-                        try {
-                            _acao.value = Acao.Fim
-                            editor.putString("box", "").apply()
-                            scannerRepository.liberarBox(
-                                usuario = idUsuario,
-                                box = box,
-                                acao = observerAcao(Acao.Fim),
-                                token = token!!
-                            )
-                            _status.value = Result.Finalizada
 
-                        } catch (e: Exception) {
-                            _status.value = Result.Error(e)
-                        }
+                try {
+                    scannerRepository.liberarBox(
+                        usuario = idUsuario,
+                        box = box,
+                        situacao = "D",
+                        token = token!!
+                    )
+                    _status.value = Result.Finalizada
+
+                } catch (e: Exception) {
+                    if (e.message!!.contains("Unauthorized")) {
+                        sharedPreferences.edit().clear().apply()
+                        _status.value = Result.Unauthorized
                     }
+                    _status.value = Result.Error(e)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("box", box).apply()
                 }
 
             } catch (e: Exception) {
-                print("DEU ERRO AQUI ${e.message}")
+                val editor = sharedPreferences.edit()
+                editor.putString("box", box).apply()
+
             } finally {
                 dismiss()
             }

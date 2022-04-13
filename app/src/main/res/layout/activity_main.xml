@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         app:layout_constraintWidth_percent="0.9"
-        android:text="Ler QR Code"
+        android:text="Iniciar tarefa"
         android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

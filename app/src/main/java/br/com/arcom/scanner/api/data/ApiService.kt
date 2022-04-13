@@ -1,5 +1,4 @@
 package br.com.arcom.scanner.api.data
-import br.com.arcom.scanner.api.model.LiberaBoxRequest
 import br.com.arcom.scanner.api.model.SolicitaDeviceTokenRequest
 import br.com.arcom.scanner.api.model.SolicitaDeviceTokenResponse
 import com.google.gson.GsonBuilder
@@ -7,19 +6,11 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
-import okhttp3.ResponseBody
-
-import retrofit2.http.GET
-
-
-
-
 
 
 interface ApiService{
@@ -29,11 +20,11 @@ interface ApiService{
     ): SolicitaDeviceTokenResponse
 
 
-    @POST("api/estoque/v1/liberacao-box-carregamento")
-    suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?,@Query("acao")  acao: String?)
+    @POST("api/estoque/v1/atualiza-box-carregamento")
+    suspend fun liberarBox(@Query("box")  box: String?,@Query("usuario")  usuario: Long?,@Query("situacao")  situacao: String?)
 
     companion object {
-        const val BASE_URL = ""
+        const val BASE_URL = "http://0cea-200-251-86-130.ngrok.io"
 
         fun create(token: String?): ApiService {
             val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC}
