@@ -33,6 +33,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.btnScan.setOnClickListener { initScanner() }
+        binding.btnDeslogar.setOnClickListener {
+            viewModel.deslogar()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
         viewModel = ViewModelProvider(this)[ScannerViewModel::class.java]
         viewModel.verificaBox()
         viewModel.dadosUsuario.observe(this) {
